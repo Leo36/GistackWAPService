@@ -1,0 +1,72 @@
+﻿<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices m:DataServiceVersion="3.0" m:MaxDataServiceVersion="3.0" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+    <Schema Namespace="MicrosoftCompute" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <EntityType Name="NamedVersionedPublishedEntity" Abstract="true">
+        <Key>
+          <PropertyRef Name="Name" />
+          <PropertyRef Name="Publisher" />
+          <PropertyRef Name="Version" />
+        </Key>
+        <Property Name="Name" Type="Edm.String" Nullable="false" />
+        <Property Name="Publisher" Type="Edm.String" Nullable="false" />
+        <Property Name="Version" Type="Edm.String" Nullable="false" />
+      </EntityType>
+      <EntityType Name="GalleryItem" BaseType="MicrosoftCompute.NamedVersionedPublishedEntity" Abstract="true">
+        <Property Name="ContentUrl" Type="Edm.String" />
+        <Property Name="Description" Type="Edm.String" />
+        <Property Name="IconUrl" Type="Edm.String" />
+        <Property Name="Label" Type="Edm.String" />
+        <Property Name="PublishDate" Type="Edm.DateTime" />
+        <Property Name="PublisherLabel" Type="Edm.String" />
+        <NavigationProperty Name="Content" Relationship="MicrosoftCompute.GalleryItem_Content" ToRole="Content" FromRole="GalleryItem" />
+      </EntityType>
+      <EntityType Name="ResourceDefinitionGalleryItem" BaseType="MicrosoftCompute.GalleryItem" Abstract="true">
+        <Property Name="ResourceDefinition" Type="Edm.Stream" Nullable="false" />
+        <Property Name="ResourceDefinitionUrl" Type="Edm.String" />
+        <Property Name="ViewDefinitionUrl" Type="Edm.String" />
+      </EntityType>
+      <EntityType Name="VMRoleGalleryItem" BaseType="MicrosoftCompute.ResourceDefinitionGalleryItem" />
+      <EntityType Name="GalleryPackageContentFile" m:HasStream="true">
+        <Key>
+          <PropertyRef Name="Name" />
+          <PropertyRef Name="Publisher" />
+          <PropertyRef Name="Version" />
+          <PropertyRef Name="FilePath" />
+        </Key>
+        <Property Name="Name" Type="Edm.String" Nullable="false" />
+        <Property Name="Publisher" Type="Edm.String" Nullable="false" />
+        <Property Name="Version" Type="Edm.String" Nullable="false" />
+        <Property Name="FilePath" Type="Edm.String" Nullable="false" />
+        <Property Name="ContentType" Type="Edm.String" />
+        <NavigationProperty Name="GalleryItem" Relationship="MicrosoftCompute.GalleryPackageContentFile_GalleryItem" ToRole="GalleryItem" FromRole="GalleryPackageContentFile" />
+      </EntityType>
+      <EntityType Name="ViewDefinition" BaseType="MicrosoftCompute.NamedVersionedPublishedEntity" m:HasStream="true" />
+      <Association Name="GalleryItem_Content">
+        <End Type="MicrosoftCompute.GalleryPackageContentFile" Role="Content" Multiplicity="*" />
+        <End Type="MicrosoftCompute.GalleryItem" Role="GalleryItem" Multiplicity="*" />
+      </Association>
+      <Association Name="GalleryPackageContentFile_GalleryItem">
+        <End Type="MicrosoftCompute.GalleryPackageContentFile" Role="GalleryPackageContentFile" Multiplicity="*" />
+        <End Type="MicrosoftCompute.GalleryItem" Role="GalleryItem" Multiplicity="0..1" />
+      </Association>
+      <Annotations Target="Microsoft.SystemCenter.Foundation.GalleryService.GalleryDataProvider">
+        <ValueAnnotation Term="Com.Microsoft.Data.Services.Conventions.V1.UrlConventions" String="KeyAsSegment" />
+      </Annotations>
+    </Schema>
+    <Schema Namespace="Microsoft.SystemCenter.Foundation.GalleryService" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <EntityContainer Name="GalleryDataProvider" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="GalleryItems" EntityType="MicrosoftCompute.GalleryItem" />
+        <EntitySet Name="GalleryPackageContentFiles" EntityType="MicrosoftCompute.GalleryPackageContentFile" />
+        <EntitySet Name="ViewDefinitions" EntityType="MicrosoftCompute.ViewDefinition" />
+        <AssociationSet Name="GalleryItem_Content" Association="MicrosoftCompute.GalleryItem_Content">
+          <End Role="GalleryItem" EntitySet="GalleryItems" />
+          <End Role="Content" EntitySet="GalleryPackageContentFiles" />
+        </AssociationSet>
+        <AssociationSet Name="GalleryPackageContentFile_GalleryItem" Association="MicrosoftCompute.GalleryPackageContentFile_GalleryItem">
+          <End Role="GalleryPackageContentFile" EntitySet="GalleryPackageContentFiles" />
+          <End Role="GalleryItem" EntitySet="GalleryItems" />
+        </AssociationSet>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
