@@ -297,8 +297,9 @@ namespace ContosoPortal.Models
                             dynamicMemoryMinimumMB = 0,
                             perfCPUUtilization = (int)vm.PerfCPUUtilization,
                             perfMemory = (int)vm.Memory,
-                            virtualMachineStatus = vm.StatusString,
-
+                            virtualMachineStatus = vm.Status,
+                            operatingSystem = vm.OperatingSystem,
+                            ips = networkadapters.Select(v => v.IPv4Addresses).FirstOrDefault(),
                             virtualHardDisks = vhds.Select(v => v.Name),
                             virtualNetworkAdapters = networkadapters.Select(v => v.VMNetworkName)
                         });

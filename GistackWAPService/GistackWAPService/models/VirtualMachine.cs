@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using GistackWAPService.models;
 using System.Runtime.Serialization;
+using System.Collections.ObjectModel;
 
 namespace GistackWAPService.models
 {
@@ -37,6 +38,10 @@ namespace GistackWAPService.models
           public string cloud { get; set; }
         [DataMember]
           public string vmTemplate { get; set; }
+          [DataMember]
+          public string operatingSystem{ get; set; }
+        [DataMember]
+         public ObservableCollection<string> ips { get; set; }
         [DataMember]
           public IEnumerable<String> virtualHardDisks { get; set; }
         [DataMember]
